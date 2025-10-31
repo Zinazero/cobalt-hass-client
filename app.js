@@ -104,29 +104,35 @@ function renderScenes(scenes) {
 }
 
 function renderScripts(scripts) {
-    var container = document.getElementById("scripts");
-    container.innerHTML = "";
+    var clientContainer = document.getElementById("scripts");
+    var toggleContainer = document.getElementById("toggles");
 
-    var toggleScripts = [];
+    clientContainer.innerHTML = "";
+    toggleContainer.innerHTML = "";
 
     for (var i = 0; i < scripts.length; i++) {
         var script = scripts[i];
         var fullName = script.attributes.friendly_name || script.entity_id;
+        var targetContainer = null;
+        var displayName = fullName;
 
-        // Collect toggle scripts
-        if (fullName.indexOf("[TOGGLE]") === 0) {
-            toggleScripts.push(script);
+        // Determine which container to render to
+        if (fullName.indexOf("[CLIENT]") === 0) {
+            targetContainer = clientContainer;
+            displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
+        } else if (fullName.indexOf("[TOGGLE]") === 0) {
+            targetContainer = toggleContainer;
+            displayName = fullName.replace(/^\[TOGGLE\]\s*/, "");
+        } else {
+            // Skip anything without a recognized prefix
+            continue;
         }
 
-        // Only show scripts with [CLIENT] prefix
-        if (fullName.indexOf("[CLIENT]") !== 0) continue;
-
-        // Remove prefix for button label
-        var displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
-
+        // Create button
         var btn = document.createElement("button");
         btn.textContent = displayName;
 
+        // Optional icon support
         var icon = script.attributes.icon;
         if (icon) {
             var iconEl = document.createElement("i");
@@ -135,46 +141,15 @@ function renderScripts(scripts) {
             btn.insertBefore(iconEl, btn.firstChild);
         }
 
+        // Attach handler
         btn.onclick = (function(s) {
             return function() { runScript(s.entity_id); };
         })(script);
 
-        container.appendChild(btn);
-    }
-
-    // Render toggle scripts
-    renderToggles(toggleScripts);
-}
-
-function renderToggles(toggles) {
-    var container = document.getElementById("toggles");
-    container.innerHTML = "";
-
-    for (var i = 0; i < toggles.length; i++) {
-        var toggle = toggles[i];
-        var fullName = toggle.attributes.friendly_name || toggle.entity_id;
-
-        // Remove prefix for button label
-        var displayName = fullName.replace(/^\[TOGGLE\]\s*/, "");
-
-        var btn = document.createElement("button");
-        btn.textContent = displayName;
-
-        var icon = toggle.attributes.icon;
-        if (icon) {
-            var iconEl = document.createElement("i");
-            iconEl.className = "mdi " + icon.replace("mdi:", "mdi-");
-            iconEl.style.marginRight = "0.5em";
-            btn.insertBefore(iconEl, btn.firstChild);
-        }
-
-        btn.onclick = (function(s) {
-            return function() { runScript(s.entity_id); };
-        })(toggle);
-
-        container.appendChild(btn);
+        targetContainer.appendChild(btn);
     }
 }
+
 
 
 function renderGroups(entities) {
