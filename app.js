@@ -393,8 +393,19 @@ function loadEntities() {
             return e.entity_id.indexOf("group.") !== 0;
         });
 
-        renderScenes(filterByDomain(entities, "scene"));
-        renderScripts(filterByDomain(entities, "script"));
+        var scenes = filterByDomain(entities, "scene");
+        scenes.sort(function(a, b) {
+            return (a.attributes.sort_order || 999) - (b.attributes.sort_order || 999);
+        });
+
+
+        var scripts = filterByDomain(entities, "script");
+        scripts.sort(function(a, b) {
+            return (a.attributes.sort_order || 999) - (b.attributes.sort_order || 999);
+        });
+
+        renderScenes(scenes);
+        renderScripts(scripts);
         renderGroups(entities);
         renderDevices(nonGroupEntities);
     }, function () {
