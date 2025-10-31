@@ -135,7 +135,7 @@ function renderScripts(scripts) {
         var targetContainer = null;
         var displayName = fullName;
 
-        // Determine which container to render to
+        // Determine container and clean up name
         if (fullName.indexOf("[CLIENT]") === 0) {
             targetContainer = clientContainer;
             displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
@@ -160,33 +160,48 @@ function renderScripts(scripts) {
         }
 
         // Color logic
-        // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
-        if (attrs.btn_color) {
-            btn.style.backgroundColor = attrs.btn_color;
-        }
-
-        // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
+        var baseColor = "#00c6ee"; // fallback
+        if (attrs.btn_color) baseColor = attrs.btn_color;
         else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
             var rgb = attrs.btn_rgb_color;
-            btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+            baseColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
         }
 
-        // Option 3: fallback to default styling (no color change)
-        else {
-            btn.style.backgroundColor = "";
+        // For TOGGLE scripts, highlight if active
+        if (fullName.indexOf("[TOGGLE]") === 0 && script.state === "on") {
+            btn.style.backgroundColor = "#ffffff";
+            btn.style.color = baseColor;
+        } else {
+            btn.style.backgroundColor = baseColor;
+            btn.style.color = "#ffffff";
         }
 
         // Attach click handler
-        btn.onclick = (function(s) {
-            return function() { runScript(s.entity_id); };
-        })(script);
+        (function(s, button, bColor) {
+            button.onclick = function() {
+                runScript(s.entity_id);
+
+                // Optimistically update the button for TOGGLE scripts
+                if (fullName.indexOf("[TOGGLE]") === 0) {
+                    if (s.state === "on") {
+                        s.state = "off";
+                        button.style.backgroundColor = bColor;
+                        button.style.color = "#ffffff";
+                    } else {
+                        s.state = "on";
+                        button.style.backgroundColor = "#ffffff";
+                        button.style.color = bColor;
+                    }
+
+                    // Refresh real states after short delay
+                    setTimeout(loadEntities, 1000);
+                }
+            };
+        })(script, btn, baseColor);
 
         targetContainer.appendChild(btn);
     }
 }
-
-
-
 
 function renderGroups(entities) {
     var container = document.getElementById("groups");
