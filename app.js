@@ -2,422 +2,449 @@ var SERVER_URL = window.env.SERVER_URL;
 var TOKEN = window.env.TOKEN;
 
 function log(msg) {
-    console.log(msg);
-    var logEl = document.getElementById('log');
-    if (!logEl) return;
-    logEl.textContent += msg + '\n';
+	console.log(msg);
+	var logEl = document.getElementById('log');
+	if (!logEl) return;
+	logEl.textContent += msg + '\n';
 }
 
 function fetchEntities(callback, errorCallback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", SERVER_URL + "/api/states", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                callback(JSON.parse(xhr.responseText));
-            } else {
-                errorCallback(xhr.status);
-            }
-        }
-    };
-    xhr.send();
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', SERVER_URL + '/api/states', true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4) {
+			if (xhr.status === 200) {
+				callback(JSON.parse(xhr.responseText));
+			} else {
+				errorCallback(xhr.status);
+			}
+		}
+	};
+	xhr.send();
 }
 
 function activateScene(entityId) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL + "/api/services/scene/turn_on", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify({ entity_id: entityId }));
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', SERVER_URL + '/api/services/scene/turn_on', true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({ entity_id: entityId }));
 }
 
 function runScript(entityId) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL + "/api/services/script/turn_on", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify({ entity_id: entityId }));
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', SERVER_URL + '/api/services/script/turn_on', true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({ entity_id: entityId }));
 }
 
 function toggleEntity(entity, callback) {
-    var domain = entity.entity_id.split(".")[0];
-    var service = entity.state === "on" ? "turn_off" : "turn_on";
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL + "/api/services/" + domain + "/" + service, true);
-    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                if (callback) callback();
-            } else {
-                log("Toggle failed with status: " + xhr.status);
-            }
-        }
-    };
+	var domain = entity.entity_id.split('.')[0];
+	var service = entity.state === 'on' ? 'turn_off' : 'turn_on';
+	var xhr = new XMLHttpRequest();
+	xhr.open(
+		'POST',
+		SERVER_URL + '/api/services/' + domain + '/' + service,
+		true
+	);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4) {
+			if (xhr.status >= 200 && xhr.status < 300) {
+				if (callback) callback();
+			} else {
+				log('Toggle failed with status: ' + xhr.status);
+			}
+		}
+	};
 
-    xhr.send(JSON.stringify({ entity_id: entity.entity_id }));
+	xhr.send(JSON.stringify({ entity_id: entity.entity_id }));
 }
 
 function filterByDomain(entities, domain) {
-    var result = [];
-    for (var i = 0; i < entities.length; i++) {
-        if (entities[i].entity_id.indexOf(domain + ".") === 0) {
-            result.push(entities[i]);
-        }
-    }
-    return result;
+	var result = [];
+	for (var i = 0; i < entities.length; i++) {
+		if (entities[i].entity_id.indexOf(domain + '.') === 0) {
+			result.push(entities[i]);
+		}
+	}
+	return result;
 }
 
 function renderScenes(scenes) {
-    var container = document.getElementById("scenes");
-    container.innerHTML = "";
-    for (var i = 0; i < scenes.length; i++) {
-        var scene = scenes[i];
-        var fullName = scene.attributes.friendly_name || scene.entity_id;
-        var attrs = scene.attributes;
+	var container = document.getElementById('scenes');
+	container.innerHTML = '';
+	for (var i = 0; i < scenes.length; i++) {
+		var scene = scenes[i];
+		var fullName = scene.attributes.friendly_name || scene.entity_id;
+		var attrs = scene.attributes;
 
-        // Only show scenes with [CLIENT] prefix
-        if (fullName.indexOf("[CLIENT]") !== 0) continue;
+		// Only show scenes with [CLIENT] prefix
+		if (fullName.indexOf('[CLIENT]') !== 0) continue;
 
-        // Remove prefix for button label
-        var displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
+		// Remove prefix for button label
+		var displayName = fullName.replace(/^\[CLIENT\]\s*/, '');
 
-        var btn = document.createElement("button");
-        btn.textContent = displayName;
+		var btn = document.createElement('button');
+		btn.textContent = displayName;
 
-        var icon = scene.attributes.icon;
-        if (icon) {
-            var iconEl = document.createElement("i");
-            iconEl.className = "mdi " + icon.replace("mdi:", "mdi-");
-            iconEl.style.marginRight = "0.5em";
-            btn.insertBefore(iconEl, btn.firstChild);
-        }
+		var icon = scene.attributes.icon;
+		if (icon) {
+			var iconEl = document.createElement('i');
+			iconEl.className = 'mdi ' + icon.replace('mdi:', 'mdi-');
+			iconEl.style.marginRight = '0.5em';
+			btn.insertBefore(iconEl, btn.firstChild);
+		}
 
-        // Color logic
-        // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
-        if (attrs.btn_color) {
-            btn.style.backgroundColor = attrs.btn_color;
-        }
+		// Color logic
+		// Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
+		if (attrs.btn_color) {
+			btn.style.backgroundColor = attrs.btn_color;
+		}
 
-        // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
-        else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
-            var rgb = attrs.btn_rgb_color;
-            btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
-        }
+		// Option 2: if rgb_color is an array (e.g. [255, 100, 0])
+		else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
+			var rgb = attrs.btn_rgb_color;
+			btn.style.backgroundColor =
+				'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+		}
 
-        // Option 3: fallback to default styling (no color change)
-        else {
-            btn.style.backgroundColor = "";
-        }
+		// Option 3: fallback to default styling (no color change)
+		else {
+			btn.style.backgroundColor = '';
+		}
 
-        btn.onclick = function (s) {
-            return function () { activateScene(s.entity_id); };
-        }(scene);
+		btn.onclick = (function (s) {
+			return function () {
+				activateScene(s.entity_id);
+			};
+		})(scene);
 
-        container.appendChild(btn);
-    }
+		container.appendChild(btn);
+	}
 }
 
-function renderScripts(scripts) {
-    var clientContainer = document.getElementById("scripts");
-    var toggleContainer = document.getElementById("toggles");
+function renderScripts(scripts, toggles) {
+	var clientContainer = document.getElementById('scripts');
+	var toggleContainer = document.getElementById('toggles');
 
-    clientContainer.innerHTML = "";
-    toggleContainer.innerHTML = "";
+	clientContainer.innerHTML = '';
+	toggleContainer.innerHTML = '';
 
-    for (var i = 0; i < scripts.length; i++) {
-        var script = scripts[i];
-        var fullName = script.attributes.friendly_name || script.entity_id;
-        var attrs = script.attributes;
-        var targetContainer = null;
-        var displayName = fullName;
+	for (var i = 0; i < scripts.length; i++) {
+		var script = scripts[i];
+		var fullName = script.attributes.friendly_name || script.entity_id;
+		var attrs = script.attributes;
+		var targetContainer = null;
+		var displayName = fullName;
 
-        // Determine container and clean up name
-        if (fullName.indexOf("[CLIENT]") === 0) {
-            targetContainer = clientContainer;
-            displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
-        } else if (fullName.indexOf("[TOGGLE]") === 0) {
-            targetContainer = toggleContainer;
-            displayName = fullName.replace(/^\[TOGGLE\]\s*/, "");
-        } else {
-            continue;
-        }
+		// Determine container and clean up name
+		var isToggle = fullName.indexOf('[TOGGLE]') === 0;
+		if (fullName.indexOf('[CLIENT]') === 0) {
+			targetContainer = clientContainer;
+			displayName = fullName.replace(/^\[CLIENT\]\s*/, '');
+		} else if (isToggle) {
+			targetContainer = toggleContainer;
+			displayName = fullName.replace(/^\[TOGGLE\]\s*/, '');
+		} else {
+			continue;
+		}
 
-        // Create button
-        var btn = document.createElement("button");
-        btn.textContent = displayName;
+		// Create button
+		var btn = document.createElement('button');
+		btn.textContent = displayName;
 
-        // Optional icon
-        var icon = attrs.icon;
-        if (icon) {
-            var iconEl = document.createElement("i");
-            iconEl.className = "mdi " + icon.replace("mdi:", "mdi-");
-            iconEl.style.marginRight = "0.5em";
-            btn.insertBefore(iconEl, btn.firstChild);
-        }
+		// Optional icon
+		var icon = attrs.icon;
+		if (icon) {
+			var iconEl = document.createElement('i');
+			iconEl.className = 'mdi ' + icon.replace('mdi:', 'mdi-');
+			iconEl.style.marginRight = '0.5em';
+			btn.insertBefore(iconEl, btn.firstChild);
+		}
 
-        // Base color
-        var baseColor = attrs.btn_color || "#00c6ee";
+		// Base color
+		var baseColor = attrs.btn_color || '#00c6ee';
 
-        // For TOGGLE scripts, determine active state from input_boolean
-        var isToggle = fullName.indexOf("[TOGGLE]") === 0;
-        var toggleEntityId = attrs.toggle_entity_id;
-        var isActive = false;
+		// Determine active state for toggle scripts
+		var isActive = false;
+		var toggleEntityId = attrs.toggle_entity_id;
+		if (isToggle && toggleEntityId) {
+			for (var j = 0; j < toggles.length; j++) {
+				if (toggles[j].entity_id === toggleEntityId) {
+					isActive = toggles[j].state === 'on';
+					break;
+				}
+			}
+		}
 
-        if (isToggle && toggleEntityId) {
-            var toggleEntity = scripts.find(function(e){ return e.entity_id === toggleEntityId; });
-            if (toggleEntity) isActive = toggleEntity.state === "on";
-        }
+		btn.style.backgroundColor = isActive ? '#ffffff' : baseColor;
+		btn.style.color = isActive ? baseColor : '#ffffff';
 
-        btn.style.backgroundColor = isActive ? "#ffffff" : baseColor;
-        btn.style.color = isActive ? baseColor : "#ffffff";
+		// Click handler
+		(function (s, button, isToggle, toggleId) {
+			button.onclick = function () {
+				if (isToggle && toggleId) {
+					// Find the input_boolean in toggles
+					var toggleObj = null;
+					for (var k = 0; k < toggles.length; k++) {
+						if (toggles[k].entity_id === toggleId) {
+							toggleObj = toggles[k];
+							break;
+						}
+					}
+					if (toggleObj) {
+						toggleEntity(toggleObj, function () {
+							setTimeout(loadEntities, 500);
+						});
+					}
+				} else {
+					runScript(s.entity_id);
+				}
+			};
+		})(script, btn, isToggle, toggleEntityId);
 
-        // Click handler
-        (function(s, button, toggleEntityId){
-            button.onclick = function() {
-                if (toggleEntityId) {
-                    toggleEntity({entity_id: toggleEntityId}); 
-                    setTimeout(loadEntities, 500)
-                } else {
-                    runScript(s.entity_id);
-                }
-            };
-        })(script, btn, baseColor, toggleEntityId);
-
-        targetContainer.appendChild(btn);
-    }
+		targetContainer.appendChild(btn);
+	}
 }
-
 
 function renderGroups(entities) {
-    var container = document.getElementById("groups");
-    container.innerHTML = "";
+	var container = document.getElementById('groups');
+	container.innerHTML = '';
 
-    entities.forEach(function (entity) {
-        var domain = entity.entity_id.split(".")[0];
+	entities.forEach(function (entity) {
+		var domain = entity.entity_id.split('.')[0];
 
-        // Only include groups or group-like entities with an entity_id array (but not scenes)
-        if ((domain === "group" || Array.isArray(entity.attributes.entity_id)) && domain !== "scene") {
+		// Only include groups or group-like entities with an entity_id array (but not scenes)
+		if (
+			(domain === 'group' || Array.isArray(entity.attributes.entity_id)) &&
+			domain !== 'scene'
+		) {
+			// Create wrapper div
+			var groupDiv = document.createElement('div');
+			groupDiv.className = entity.state + ' group-row';
 
-            // Create wrapper div
-            var groupDiv = document.createElement("div");
-            groupDiv.className = entity.state + " group-row";
+			// Toggle button
+			var btn = document.createElement('button');
+			btn.textContent = entity.attributes.friendly_name || entity.entity_id;
 
-            // Toggle button
-            var btn = document.createElement("button");
-            btn.textContent = (entity.attributes.friendly_name || entity.entity_id);
+			btn.onclick = function () {
+				var originalState = entity.state;
 
-            btn.onclick = function () {
-                var originalState = entity.state;
+				// Send the toggle command to HA
+				toggleEntity(entity, function () {
+					setTimeout(loadEntities, 1000); // give HA time to update state
+				});
 
-                // Send the toggle command to HA
-                toggleEntity(entity, function () {
-                    setTimeout(loadEntities, 1000); // give HA time to update state
-                });
+				// Optimistically update the state
+				entity.state = originalState === 'on' ? 'off' : 'on';
 
-                // Optimistically update the state
-                entity.state = originalState === "on" ? "off" : "on";
+				// Immediately re-render the UI
+				renderGroups(entities);
+			};
 
-                // Immediately re-render the UI
-                renderGroups(entities);
-            };
+			groupDiv.appendChild(btn);
 
+			if (domain === 'light' && entity.attributes.rgb_color) {
+				var rgb = entity.attributes.rgb_color;
+				var hex = ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2])
+					.toString(16)
+					.slice(1);
 
-            groupDiv.appendChild(btn);
+				var input = document.createElement('input');
+				input.readOnly = true;
+				input.value = hex;
+				input.setAttribute('data-jscolor', '{closeButton:true}');
+				input.setAttribute('data-entity-id', entity.entity_id);
+				input.style.marginLeft = '10px';
+				input.style.padding = '5px';
+				input.style.border = '1px solid #ccc';
+				input.style.width = '80px';
 
-            if (domain === "light" && entity.attributes.rgb_color) {
-                var rgb = entity.attributes.rgb_color;
-                var hex = ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2])
-                    .toString(16)
-                    .slice(1);
+				input.addEventListener('change', function () {
+					try {
+						var hexVal = this.value.replace(/^#/, '');
+						var entId = this.getAttribute('data-entity-id');
 
-                var input = document.createElement("input");
-                input.readOnly = true;
-                input.value = hex;
-                input.setAttribute("data-jscolor", "{closeButton:true}");
-                input.setAttribute("data-entity-id", entity.entity_id);
-                input.style.marginLeft = "10px";
-                input.style.padding = "5px";
-                input.style.border = "1px solid #ccc";
-                input.style.width = "80px";
+						if (!hexVal || hexVal.length !== 6) {
+							log('Invalid hex color:', hexVal);
+							return;
+						}
 
-                input.addEventListener("change", function () {
-                    try {
-                        var hexVal = this.value.replace(/^#/, "");
-                        var entId = this.getAttribute("data-entity-id");
+						var r = parseInt(hexVal.substring(0, 2), 16);
+						var g = parseInt(hexVal.substring(2, 4), 16);
+						var b = parseInt(hexVal.substring(4, 6), 16);
 
-                        if (!hexVal || hexVal.length !== 6) {
-                            log("Invalid hex color:", hexVal);
-                            return;
-                        }
+						if ([r, g, b].some(isNaN)) {
+							log('Parsed RGB contains NaN', r, g, b);
+							return;
+						}
 
-                        var r = parseInt(hexVal.substring(0, 2), 16);
-                        var g = parseInt(hexVal.substring(2, 4), 16);
-                        var b = parseInt(hexVal.substring(4, 6), 16);
+						setLightColor(entId, [r, g, b]);
+					} catch (e) {
+						log('Error in color change handler:', e);
+					}
+				});
 
-                        if ([r, g, b].some(isNaN)) {
-                            log("Parsed RGB contains NaN", r, g, b);
-                            return;
-                        }
+				groupDiv.appendChild(input);
 
-                        setLightColor(entId, [r, g, b]);
-                    } catch (e) {
-                        log("Error in color change handler:", e);
-                    }
-                });
+				if (window.jscolor) {
+					new jscolor(input);
+				}
+			}
 
-                groupDiv.appendChild(input);
-
-                if (window.jscolor) {
-                    new jscolor(input);
-                }
-            }
-
-            container.appendChild(groupDiv);
-        }
-    });
+			container.appendChild(groupDiv);
+		}
+	});
 }
 
 function renderDevices(devices) {
-    var container = document.getElementById("devices-section");
-    container.innerHTML = "";
+	var container = document.getElementById('devices-section');
+	container.innerHTML = '';
 
-    for (var i = 0; i < devices.length; i++) {
-        var device = devices[i];
-        var domain = device.entity_id.split(".")[0];
+	for (var i = 0; i < devices.length; i++) {
+		var device = devices[i];
+		var domain = device.entity_id.split('.')[0];
 
-        if (Array.isArray(device.attributes.entity_id)) {
-            continue;
-        }
+		if (Array.isArray(device.attributes.entity_id)) {
+			continue;
+		}
 
-        if (domain === "light" || domain === "switch") {
-            var groupDiv = document.createElement("div");
-            groupDiv.className = device.state + " group-row";
+		if (domain === 'light' || domain === 'switch') {
+			var groupDiv = document.createElement('div');
+			groupDiv.className = device.state + ' group-row';
 
-            // Toggle Button
-            var btn = document.createElement("button");
-            btn.textContent = (device.attributes.friendly_name || device.entity_id);
+			// Toggle Button
+			var btn = document.createElement('button');
+			btn.textContent = device.attributes.friendly_name || device.entity_id;
 
-            (function (dev, button) {
-                button.onclick = function () {
-                    // Save the original state
-                    var originalState = dev.state;
+			(function (dev, button) {
+				button.onclick = function () {
+					// Save the original state
+					var originalState = dev.state;
 
-                    // Call HA to toggle the state based on the real current state
-                    toggleEntity(dev, function () {
-                        // Refresh real state from HA after short delay
-                        setTimeout(loadEntities, 500);
-                    });
+					// Call HA to toggle the state based on the real current state
+					toggleEntity(dev, function () {
+						// Refresh real state from HA after short delay
+						setTimeout(loadEntities, 500);
+					});
 
-                    // Optimistically update the device state locally
-                    dev.state = originalState === "on" ? "off" : "on";
+					// Optimistically update the device state locally
+					dev.state = originalState === 'on' ? 'off' : 'on';
 
-                    // Re-render UI immediately
-                    renderDevices(devices);
-                };
-            })(device, btn);
+					// Re-render UI immediately
+					renderDevices(devices);
+				};
+			})(device, btn);
 
+			groupDiv.appendChild(btn);
 
-            groupDiv.appendChild(btn);
+			// Color Picker (only for RGB-capable lights)
+			if (domain === 'light' && device.attributes.rgb_color) {
+				var rgb = device.attributes.rgb_color;
+				var hex = ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2])
+					.toString(16)
+					.slice(1);
+				var input = document.createElement('input');
+				input.readOnly = true;
+				input.value = hex;
+				input.setAttribute('data-jscolor', '{closeButton:true}');
+				input.setAttribute('data-entity-id', device.entity_id);
 
-            // Color Picker (only for RGB-capable lights)
-            if (domain === "light" && device.attributes.rgb_color) {
-                var rgb = device.attributes.rgb_color;
-                var hex = ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2])
-                    .toString(16)
-                    .slice(1);
-                var input = document.createElement("input");
-                input.readOnly = true;
-                input.value = hex;
-                input.setAttribute("data-jscolor", "{closeButton:true}");
-                input.setAttribute("data-entity-id", device.entity_id);
+				// Add event listener for color changes
+				input.addEventListener('change', function () {
+					try {
+						var hexVal = this.value.replace(/^#/, '');
+						var entId = this.getAttribute('data-entity-id');
 
-                // Add event listener for color changes
-                input.addEventListener('change', function () {
-                    try {
-                        var hexVal = this.value.replace(/^#/, '');
-                        var entId = this.getAttribute("data-entity-id");
+						if (!hexVal || hexVal.length !== 6) {
+							log('Invalid hex color:', hexVal);
+							return;
+						}
 
-                        if (!hexVal || hexVal.length !== 6) {
-                            log("Invalid hex color:", hexVal);
-                            return;
-                        }
+						var r = parseInt(hexVal.substring(0, 2), 16);
+						var g = parseInt(hexVal.substring(2, 4), 16);
+						var b = parseInt(hexVal.substring(4, 6), 16);
 
-                        var r = parseInt(hexVal.substring(0, 2), 16);
-                        var g = parseInt(hexVal.substring(2, 4), 16);
-                        var b = parseInt(hexVal.substring(4, 6), 16);
+						if ([r, g, b].some(isNaN)) {
+							log('Parsed RGB contains NaN', r, g, b);
+							return;
+						}
 
-                        if ([r, g, b].some(isNaN)) {
-                            log("Parsed RGB contains NaN", r, g, b);
-                            return;
-                        }
+						setLightColor(entId, [r, g, b]);
+					} catch (e) {
+						log('Error in color change handler:', e);
+					}
+				});
 
-                        setLightColor(entId, [r, g, b]);
-                    } catch (e) {
-                        log("Error in color change handler:", e);
-                    }
-                });
+				groupDiv.appendChild(input);
 
+				// Initialize jscolor picker on the input
+				if (window.jscolor) {
+					new jscolor(input);
+				}
+			} else {
+				var input = document.createElement('input');
+				input.readOnly = true;
+				groupDiv.appendChild(input);
+			}
 
-                groupDiv.appendChild(input);
-
-                // Initialize jscolor picker on the input
-                if (window.jscolor) {
-                    new jscolor(input);
-                }
-            } else {
-                var input = document.createElement("input");
-                input.readOnly = true;
-                groupDiv.appendChild(input);
-            }
-
-            container.appendChild(groupDiv);
-        }
-    }
+			container.appendChild(groupDiv);
+		}
+	}
 }
 
-
 function setLightColor(entityId, rgbArray) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_URL + "/api/services/light/turn_on", true);
-    xhr.setRequestHeader("Authorization", "Bearer " + TOKEN);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify({
-        entity_id: entityId,
-        rgb_color: rgbArray
-    }));
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', SERVER_URL + '/api/services/light/turn_on', true);
+	xhr.setRequestHeader('Authorization', 'Bearer ' + TOKEN);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(
+		JSON.stringify({
+			entity_id: entityId,
+			rgb_color: rgbArray,
+		})
+	);
 }
 
 function loadEntities() {
-    fetchEntities(function (entities) {
-        var nonGroupEntities = entities.filter(function (e) {
-            return e.entity_id.indexOf("group.") !== 0;
-        });
+	fetchEntities(
+		function (entities) {
+			var nonGroupEntities = entities.filter(function (e) {
+				return e.entity_id.indexOf('group.') !== 0;
+			});
 
-        var scenes = filterByDomain(entities, "scene");
-        scenes.sort(function(a, b) {
-            return (a.attributes.sort_order || 999) - (b.attributes.sort_order || 999);
-        });
+			var scenes = filterByDomain(entities, 'scene');
+			scenes.sort(function (a, b) {
+				return (
+					(a.attributes.sort_order || 999) - (b.attributes.sort_order || 999)
+				);
+			});
 
+			var scripts = filterByDomain(entities, 'script');
+			scripts.sort(function (a, b) {
+				return (
+					(a.attributes.sort_order || 999) - (b.attributes.sort_order || 999)
+				);
+			});
 
-        var scripts = filterByDomain(entities, "script");
-        scripts.sort(function(a, b) {
-            return (a.attributes.sort_order || 999) - (b.attributes.sort_order || 999);
-        });
+			var toggles = filterByDomain(entities, 'input_boolean');
 
-        renderScenes(scenes);
-        renderScripts(scripts);
-        renderGroups(entities);
-        renderDevices(nonGroupEntities);
-    }, function () {
-        log("Failed to load entities from Home Assistant");
-    });
+			renderScenes(scenes);
+			renderScripts(scripts, toggles);
+			renderGroups(entities);
+			renderDevices(nonGroupEntities);
+		},
+		function () {
+			log('Failed to load entities from Home Assistant');
+		}
+	);
 }
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    loadEntities();
+document.addEventListener('DOMContentLoaded', function () {
+	loadEntities();
 });
