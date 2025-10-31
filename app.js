@@ -95,6 +95,23 @@ function renderScenes(scenes) {
             btn.insertBefore(iconEl, btn.firstChild);
         }
 
+        // Color logic
+        // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
+        if (attrs.color) {
+            btn.style.backgroundColor = attrs.color;
+        }
+
+        // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
+        else if (attrs.rgb_color && attrs.rgb_color.length === 3) {
+            var rgb = attrs.rgb_color;
+            btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+        }
+
+        // Option 3: fallback to default styling (no color change)
+        else {
+            btn.style.backgroundColor = "";
+        }
+
         btn.onclick = function (s) {
             return function () { activateScene(s.entity_id); };
         }(scene);
@@ -113,6 +130,7 @@ function renderScripts(scripts) {
     for (var i = 0; i < scripts.length; i++) {
         var script = scripts[i];
         var fullName = script.attributes.friendly_name || script.entity_id;
+        var attrs = script.attributes;
         var targetContainer = null;
         var displayName = fullName;
 
@@ -124,7 +142,6 @@ function renderScripts(scripts) {
             targetContainer = toggleContainer;
             displayName = fullName.replace(/^\[TOGGLE\]\s*/, "");
         } else {
-            // Skip anything without a recognized prefix
             continue;
         }
 
@@ -132,8 +149,8 @@ function renderScripts(scripts) {
         var btn = document.createElement("button");
         btn.textContent = displayName;
 
-        // Optional icon support
-        var icon = script.attributes.icon;
+        // Optional icon
+        var icon = attrs.icon;
         if (icon) {
             var iconEl = document.createElement("i");
             iconEl.className = "mdi " + icon.replace("mdi:", "mdi-");
@@ -141,7 +158,24 @@ function renderScripts(scripts) {
             btn.insertBefore(iconEl, btn.firstChild);
         }
 
-        // Attach handler
+        // Color logic
+        // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
+        if (attrs.color) {
+            btn.style.backgroundColor = attrs.color;
+        }
+
+        // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
+        else if (attrs.rgb_color && attrs.rgb_color.length === 3) {
+            var rgb = attrs.rgb_color;
+            btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+        }
+
+        // Option 3: fallback to default styling (no color change)
+        else {
+            btn.style.backgroundColor = "";
+        }
+
+        // Attach click handler
         btn.onclick = (function(s) {
             return function() { runScript(s.entity_id); };
         })(script);
@@ -149,6 +183,7 @@ function renderScripts(scripts) {
         targetContainer.appendChild(btn);
     }
 }
+
 
 
 
