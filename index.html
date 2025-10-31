@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home Assistant Control Panel</title>
+    <script src="jscolor.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="./App.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="flex-col">
+        <h1>Cobalt Smart Control Panel</h1>
+
+        <!-- Tab Headers -->
+        <div class="tabs">
+            <button class="tab active" data-tab="main">Main</button>
+            <button class="tab" data-tab="devices">Devices</button>
+        </div>
+
+        <div id="main-container">
+            <!-- Main Tab Content -->
+            <div class="tab-content active" id="main">
+                <section class="flex-col">
+                    <span>Scenes</span>
+                    <div id="scenes" class="flex-wrap">
+                        <button>Test</button><button>Test</button><button>Test</button><button>Test</button><button>Test</button>
+                    </div>
+                </section>
+
+                <section class="flex-col">
+                    <span>Scripts</span>
+                    <div id="scripts" class="flex-wrap">
+                        <button>Test</button>
+                    </div>
+                </section>
+
+                <section class="flex-col">
+                    <span>Groups</span>
+                    <div id="groups" class="flex-col">
+                        <div class="on group-row">
+                            <button>Test</button>
+                            <input data-jscolor value="66ccff">
+                        </div>
+                        <div class="off group-row">
+                            <button>Test</button>
+                            <input data-jscolor value="66ccff">
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Devices Tab Content -->
+            <div class="tab-content" id="devices">
+                <section class="flex-col">
+                    <span>Devices</span>
+                    <div id="devices-section">
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+                        <div class="group-row">
+                            <button>Test</button>
+                            <input>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Tab Switch Script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var tabs = document.querySelectorAll('.tab');
+                for (var i = 0; i < tabs.length; i++) {
+                    (function (button) {
+                        var activateTab = function (e) {
+                            e.preventDefault();
+                            // Remove active class from all tabs and contents
+                            for (var j = 0; j < tabs.length; j++) {
+                                tabs[j].classList.remove('active');
+                            }
+                            var contents = document.querySelectorAll('.tab-content');
+                            for (var k = 0; k < contents.length; k++) {
+                                contents[k].classList.remove('active');
+                            }
+
+                            // Activate clicked tab and matching content
+                            button.classList.add('active');
+                            var tabId = button.getAttribute('data-tab');
+                            var tabEl = document.getElementById(tabId);
+                            if (tabEl) {
+                                tabEl.classList.add('active');
+                            }
+                        };
+
+                        button.addEventListener('click', activateTab);
+                        button.addEventListener('touchstart', activateTab);
+                    })(tabs[i]);
+                }
+            });
+
+        </script>
+
+        <script src="config.js"></script>
+        <script src="app.js"></script>
+        <pre id="log"></pre>
+    </div>
+</body>
+
+</html>

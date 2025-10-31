@@ -1,0 +1,204 @@
+:root {
+    --blue: #1485ff;
+    --mea-ft: #1485ff;
+    --blue-light: #8eb8e6;
+    --ar: #8eb8e6;
+    --purple: #b65bf3;
+    --mes: #b65bf3;
+    --pink: #e83e8c;
+    --red: #d41629;
+    --orange: #fd7d15;
+    --yellow: #eec44f;
+    --manager: #eec44f;
+    --yellow-light: #f3e246;
+    --maintenance: #f3e246;
+    --green: #28a745;
+    --green-light: #66e686;
+    --fa-pt: #66e686;
+    --green-dark: #0f8b2c;
+    --fa-ft: #0f8b2c;
+    --teal: #20c997;
+    --cyan: #3ec2eb;
+    --mea-pt: #3ec2eb;
+    --white: #fff;
+    --transparent-grey: rgba(184, 184, 184, 0.50);
+    --grey: #6c757d;
+    --grey-dark: #343a40;
+    --brand: #1274ff;
+    --cobalt: #0047ab;
+    --light: #f5f8fc;
+    --dark: #242422;
+    --abyss: #000712;
+    --cobalt-light: #00c6ee;
+    --pastel-green: rgb(104, 240, 133);
+    --pastel-yellow: rgb(253, 251, 147);
+    --pastel-red: rgb(247, 119, 119);
+    --beige: rgb(248, 247, 240);
+    --pool: #9cf1f1;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 1rem;
+    overflow: hidden;
+}
+
+button {
+    -webkit-appearance: none;
+    /* Remove default iOS button styles */
+    -moz-appearance: none;
+    /* Remove Firefox default styles */
+    appearance: none;
+    border: none;
+}
+
+.tab-content button {
+    background-color: var(--cobalt-light);
+    color: var(--white);
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    min-width: 15em;
+    box-sizing: border-box;
+
+    /* Prevent iOS text zoom on tap */
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Button active (pressed) state */
+.tab-content button:active {
+    transform: scale(95%);
+}
+
+input {
+    padding: 13px 0px !important;
+    border-radius: 50px !important;
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+    text-align: center !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+    min-width: 15em !important;
+    color: transparent !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+pre {
+    color: red;
+    font-size: 2em;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tabs {
+    background-color: var(--white);
+    border-radius: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-evenly;
+    width: 250px;
+    padding: 8px 20px;
+}
+
+.tab {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 24px;
+    width: 50%;
+    color: var(--transparent-grey);
+    background-color: var(--white);
+    cursor: pointer;
+    touch-action: manipulation;
+    padding: 0 5px;
+    text-align: center;
+}
+
+.tab.active {
+    color: var(--brand);
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    border-top: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+span {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+section {
+    border: 1px solid var(--transparent-grey);
+    background-color: var(--light);
+    padding: 1em;
+    border-radius: 50px;
+    margin: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.group-row {
+    background-color: var(--white);
+    border-radius: 50px;
+    margin: 10px 0;
+    padding: 2px 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.group-row button {
+    margin-right: 50px;
+}
+
+.on button {
+    background-color: var(--brand) !important;
+}
+
+.off button {
+    background-color: var(--grey) !important;
+}
+
+.off input {
+    background-color: var(--transparent-grey) !important;
+}
+
+.unavailable button,
+.unknown button {
+    background-color: var(--transparent-grey) !important;
+}
+
+#main-container {
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#devices-section {
+    max-height: 650px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
