@@ -159,49 +159,38 @@ function renderScripts(scripts) {
             btn.insertBefore(iconEl, btn.firstChild);
         }
 
-        // Color logic
-        var baseColor = "#00c6ee"; // fallback
-        if (attrs.btn_color) baseColor = attrs.btn_color;
-        else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
-            var rgb = attrs.btn_rgb_color;
-            baseColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+        // Base color
+        var baseColor = attrs.btn_color || "#00c6ee";
+
+        // For TOGGLE scripts, determine active state from input_boolean
+        var isToggle = fullName.indexOf("[TOGGLE]") === 0;
+        var toggleEntityId = attrs.toggle_entity_id;
+        var isActive = false;
+
+        if (isToggle && toggleEntityId) {
+            var toggleEntity = scripts.find(function(e){ return e.entity_id === toggleEntityId; });
+            if (toggleEntity) isActive = toggleEntity.state === "on";
         }
 
-        // For TOGGLE scripts, highlight if active
-        if (fullName.indexOf("[TOGGLE]") === 0 && script.state === "on") {
-            btn.style.backgroundColor = "#ffffff";
-            btn.style.color = baseColor;
-        } else {
-            btn.style.backgroundColor = baseColor;
-            btn.style.color = "#ffffff";
-        }
+        btn.style.backgroundColor = isActive ? "#ffffff" : baseColor;
+        btn.style.color = isActive ? baseColor : "#ffffff";
 
-        // Attach click handler
-        (function(s, button, bColor) {
+        // Click handler
+        (function(s, button, toggleEntityId){
             button.onclick = function() {
-                runScript(s.entity_id);
-
-                // Optimistically update the button for TOGGLE scripts
-                if (fullName.indexOf("[TOGGLE]") === 0) {
-                    if (s.state === "on") {
-                        s.state = "off";
-                        button.style.backgroundColor = bColor;
-                        button.style.color = "#ffffff";
-                    } else {
-                        s.state = "on";
-                        button.style.backgroundColor = "#ffffff";
-                        button.style.color = bColor;
-                    }
-
-                    // Refresh real states after short delay
-                    setTimeout(loadEntities, 1000);
+                if (toggleEntityId) {
+                    toggleEntity({entity_id: toggleEntityId}); 
+                    setTimeout(loadEntities, 500)
+                } else {
+                    runScript(s.entity_id);
                 }
             };
-        })(script, btn, baseColor);
+        })(script, btn, baseColor, toggleEntityId);
 
         targetContainer.appendChild(btn);
     }
 }
+
 
 function renderGroups(entities) {
     var container = document.getElementById("groups");
