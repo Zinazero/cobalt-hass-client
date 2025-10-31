@@ -76,8 +76,16 @@ function renderScenes(scenes) {
     container.innerHTML = "";
     for (var i = 0; i < scenes.length; i++) {
         var scene = scenes[i];
+        var fullName = scene.attributes.friendly_name || scene.entity_id;
+
+        // Only show scenes with [CLIENT] prefix
+        if (fullName.indexOf("[CLIENT]") !== 0) continue;
+
+        // Remove prefix for button label
+        var displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
+
         var btn = document.createElement("button");
-        btn.textContent = scene.attributes.friendly_name || scene.entity_id;
+        btn.textContent = displayName;
 
         var icon = scene.attributes.icon;
         if (icon) {
