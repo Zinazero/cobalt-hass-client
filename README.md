@@ -5,7 +5,18 @@ It can be used for dashboards, control panels, or any interface that interacts w
 
 ---
 
-## 📂 Project Structure
+## Third-Party Libraries
+
+This project uses the following third-party library:
+
+- **[jscolor](http://jscolor.com)** – JavaScript color picker  
+  - License: GPLv3 for open source use, or commercial license for commercial use  
+  - Author: Jan Odvarko  
+  - Usage examples: [http://jscolor.com/examples/](http://jscolor.com/examples/)
+
+---
+
+## Project Structure
 
 ```
 homeassistant/
@@ -19,7 +30,7 @@ homeassistant/
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 Before using the app, copy and rename `config.example.js` to `config.js`:
 
@@ -39,7 +50,7 @@ window.env = {
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 To serve the app in Home Assistant, place it in the `www` directory of your Home Assistant configuration folder:
 
@@ -61,7 +72,7 @@ http://192.168.2.28:8123/local/my_app/index.html
 
 ---
 
-## 🧩 Usage in Code
+## Usage in Code
 
 Your JavaScript files can access the environment variables like so:
 
@@ -74,7 +85,7 @@ You can then use these to make API requests to Home Assistant.
 
 ---
 
-## 🛡️ Security Notes
+## Security Notes
 
 - Never expose your real `config.js` in GitHub or other public repositories.  
 - Always use `.gitignore` to exclude it.  
@@ -82,7 +93,7 @@ You can then use these to make API requests to Home Assistant.
 
 ---
 
-## 🧰 Troubleshooting
+## Troubleshooting
 
 - If changes don’t appear, try **Ctrl+F5** to bypass cache.  
 - Ensure your Home Assistant file permissions allow read access to the `www` directory.  
