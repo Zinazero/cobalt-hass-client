@@ -98,13 +98,13 @@ function renderScenes(scenes) {
 
         // Color logic
         // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
-        if (attrs.color) {
-            btn.style.backgroundColor = attrs.color;
+        if (attrs.btn_color) {
+            btn.style.backgroundColor = attrs.btn_color;
         }
 
         // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
-        else if (attrs.rgb_color && attrs.rgb_color.length === 3) {
-            var rgb = attrs.rgb_color;
+        else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
+            var rgb = attrs.btn_rgb_color;
             btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
         }
 
@@ -161,13 +161,13 @@ function renderScripts(scripts) {
 
         // Color logic
         // Option 1: if script.attributes.color exists (e.g. "red" or "#ff0000")
-        if (attrs.color) {
-            btn.style.backgroundColor = attrs.color;
+        if (attrs.btn_color) {
+            btn.style.backgroundColor = attrs.btn_color;
         }
 
         // Option 2: if rgb_color is an array (e.g. [255, 100, 0])
-        else if (attrs.rgb_color && attrs.rgb_color.length === 3) {
-            var rgb = attrs.rgb_color;
+        else if (attrs.btn_rgb_color && attrs.btn_rgb_color.length === 3) {
+            var rgb = attrs.btn_rgb_color;
             btn.style.backgroundColor = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
         }
 
