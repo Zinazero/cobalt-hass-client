@@ -120,7 +120,7 @@ function renderScripts(scripts) {
         var btn = document.createElement("button");
         btn.textContent = displayName;
 
-        var icon = scene.attributes.icon;
+        var icon = script.attributes.icon;
         if (icon) {
             var iconEl = document.createElement("i");
             iconEl.className = "mdi " + icon.replace("mdi:", "mdi-");
