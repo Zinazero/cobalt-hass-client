@@ -98,16 +98,28 @@ function renderScenes(scenes) {
 function renderScripts(scripts) {
     var container = document.getElementById("scripts");
     container.innerHTML = "";
+
     for (var i = 0; i < scripts.length; i++) {
         var script = scripts[i];
+        var fullName = script.attributes.friendly_name || script.entity_id;
+
+        // Only show scripts with [CLIENT] prefix
+        if (fullName.indexOf("[CLIENT]") !== 0) continue;
+
+        // Remove prefix for button label
+        var displayName = fullName.replace(/^\[CLIENT\]\s*/, "");
+
         var btn = document.createElement("button");
-        btn.textContent = script.attributes.friendly_name || script.entity_id;
-        btn.onclick = function (s) {
-            return function () { runScript(s.entity_id); };
-        }(script);
+        btn.textContent = displayName;
+
+        btn.onclick = (function(s) {
+            return function() { runScript(s.entity_id); };
+        })(script);
+
         container.appendChild(btn);
     }
 }
+
 
 function renderGroups(entities) {
     var container = document.getElementById("groups");
