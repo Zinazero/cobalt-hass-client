@@ -433,6 +433,7 @@ function loadEntities() {
 			});
 
 			var toggles = filterByDomain(entities, 'input_boolean');
+            console.log(toggles)
 
 			renderScenes(scenes);
 			renderScripts(scripts, toggles);
