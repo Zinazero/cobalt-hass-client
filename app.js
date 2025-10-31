@@ -77,6 +77,7 @@ function renderScenes(scenes) {
     for (var i = 0; i < scenes.length; i++) {
         var scene = scenes[i];
         var fullName = scene.attributes.friendly_name || scene.entity_id;
+        var attrs = scene.attributes;
 
         // Only show scenes with [CLIENT] prefix
         if (fullName.indexOf("[CLIENT]") !== 0) continue;
